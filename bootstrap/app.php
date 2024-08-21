@@ -15,5 +15,22 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, \Illuminate\Http\Request $request) {
+            return responseStandard(
+                message: 'Validation error',
+                code: 'validation_error',
+                statusCode: 422,
+                additionalData: [
+                    'errors' => $e->errors()
+                ]
+            );
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+            return responseStandard(
+                message: 'Not found',
+                code: 'not_found',
+                statusCode: 404
+            );
+        });
     })->create();
